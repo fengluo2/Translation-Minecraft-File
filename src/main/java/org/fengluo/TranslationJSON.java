@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.fengluo.tranApi.api.ApiTran;
+import org.fengluo.api.Api;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +22,7 @@ public class TranslationJSON {
     private final Logger logger = LogManager.getLogger(getClass().getName());
     private ObjectMapper mapper = new ObjectMapper();
 
-    private ApiTran api = null;
+    private Api api = null;
     private StringJoiner stringJoiner = null;
     private int sum = 0;
     private int count = 0;
@@ -31,7 +31,7 @@ public class TranslationJSON {
     }
 
 
-    public static TranslationJSON getInstance(ApiTran api) {
+    public static TranslationJSON getInstance(Api api) {
         if (instance == null) {
             // 双重检查
             synchronized (TranslationJSON.class) {
@@ -80,15 +80,17 @@ public class TranslationJSON {
             objectNode = (ObjectNode) mapTemp.getValue().path("properties:10").path("betterquesting:10");
             name = jsonNode1.get("name:8").textValue();
             desc = jsonNode1.get("desc:8").textValue();
-            name = mapper.readTree(api.getTransResult(name, "auto", "zh")).path("trans_result").path(0).path("dst").textValue();
+            //name = mapper.readTree(api.getTransResult(name, "auto", "zh")).path("trans_result").path(0).path("dst").textValue();
+            name = api.getTransResult(name, "", "");
             sleepTime();
             if (!desc.isBlank()) {
-                jsonNode2 = mapper.readTree(api.getTransResult(desc, "auto", "zh")).path("trans_result");
+                /*jsonNode2 = mapper.readTree(api.getTransResult(desc, "auto", "zh")).path("trans_result");
                 stringJoiner = new StringJoiner("\n\n");
                 for (JsonNode j : jsonNode2) {
                     stringJoiner.add(j.get("dst").textValue());
                 }
-                desc = stringJoiner.toString();
+                desc = stringJoiner.toString();*/
+                desc = api.getTransResult(desc, "", "");
                 sleepTime();
             }
             objectNode.put("name:8", name);
@@ -99,6 +101,7 @@ public class TranslationJSON {
     }
 
     private void sleepTime() throws InterruptedException {
-        Thread.sleep(Main.SLEEP_TIME);
+        Thread.sleep(500L + (long) (Math.random() * (1000L - 500L + 1L)));
+        //Thread.sleep(Main.SLEEP_TIME);
     }
 }

@@ -1,13 +1,13 @@
-package org.fengluo.tranApi.api;
+package org.fengluo.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
- * @author Maple
+ * @Author Maple
+ * @DateTime 2022/8/12-13:24
+ * @Description
  */
-
-public interface ApiTran {
-
+public interface Api {
     /**
      * 翻译并返回翻译结果方法
      *

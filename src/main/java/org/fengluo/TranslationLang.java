@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.fengluo.tranApi.api.ApiTran;
+import org.fengluo.api.Api;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,11 +16,11 @@ public class TranslationLang {
     private static volatile TranslationLang instance = null;
     private final Logger logger = LogManager.getLogger(getClass().getName());
     private final ObjectMapper mapper = Main.mapper;
-    private ApiTran api = null;
+    private Api api = null;
     private int sum = 0;
     private int count = 0;
 
-    public static TranslationLang getInstance(ApiTran api) {
+    public static TranslationLang getInstance(Api api) {
         if (instance == null) {
             // 双重检查
             synchronized (TranslationLang.class) {
@@ -54,7 +54,8 @@ public class TranslationLang {
                 stringItem.set(i, Utils.replacementInfo(new StringBuilder(stringItem.get(i)), "%"));
                 temp = stringItem.get(i).split("=");
                 if (temp.length > 1) {
-                    temp[1] = mapper.readTree(api.getTransResult(temp[1], "auto", "zh")).path("trans_result").path(0).path("dst").textValue();
+                    //temp[1] = mapper.readTree(api.getTransResult(temp[1], "auto", "zh")).path("trans_result").path(0).path("dst").textValue();
+                    temp[1] = api.getTransResult(temp[1], "auto", "zh");
                     stringItem.set(i, temp[0] + "=" + temp[1]);
                     sleepTime();
                     count++;
